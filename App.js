@@ -21,10 +21,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/bookmark", bookmarks);
 app.use("/user", users);
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
 
 // DATABASE CONNECTION
+// process.env.DB_CONNECTION is an environment variable stored in .env file and accessed using dotenv package.
 mongoose
 	.connect(process.env.DB_CONNECTION, {
 		useNewUrlParser: true,
@@ -41,12 +40,7 @@ mongoose
 const PORT = process.env.PORT || 8000;
 
 app.get("/", (req, res) => {
-	res.send("plain get	");
-});
-
-app.post("/", (req, res) => {
-	console.log(req);
-	res.send(req.body);
+	res.send("App is successfully running. You can access required data from API endpoints provided");
 });
 
 app.listen(PORT, () => {
