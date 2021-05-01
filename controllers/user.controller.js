@@ -10,6 +10,7 @@ exports.register = async (req, res) => {
 	if (!req.body) {
 		return res.status(400).send({ message: "Request body is empty" });
 	}
+// 	VALIDATES ENTERED DATA AND THROWS ERROR IF NOT SATISIED
 	const data = validate({ name: req.body.name, email: req.body.email });
 	if (data.error) {
 		return res.status(400).send({ message: data.error.details[0].message });
