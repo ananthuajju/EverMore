@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 import * as bookmark from "../controllers/bookmark.controller";
 
 // MIDDLWARE FOR AUTHORIZATION
+// process.env.SECRET_KEY is environment variable stores in .env file and accessed using dotenv package
 router.use(function (req, res, next) {
+// 	req.headers.authorization = jwt token received
 	if (!req.headers.authorization)
 		return res.status(401).send({ message: "Access Denied" });
 	try {
