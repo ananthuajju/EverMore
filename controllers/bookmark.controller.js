@@ -4,8 +4,6 @@ import urlhandler from "./urlhandler";
 // CREATES NEW BOOKMARK
 exports.create = async (req, res) => {
 	if (!req.body.url) {
-		console.log("from if");
-		console.log(req.body);
 		res.status(400).send({ message: "url cannot be empty" });
 	}
 	// URLHANDLER RETURNS - VALIDATES AND SENDS META DATA OF THE URL
@@ -15,6 +13,7 @@ exports.create = async (req, res) => {
 		res.status(400).send({ message: "not a valid URL" });
 		return "not a valid URL";
 	}
+// 	CREATE NEW BOOKMARK FROM BOOKMARK SCHEMA
 	const bookmark = new Bookmark({
 		userId: req.body.userid,
 		url: data.url,
@@ -22,7 +21,7 @@ exports.create = async (req, res) => {
 		description: data.description,
 		date: Date.now(),
 	});
-	console.log(bookmark);
+// 	SAVE IT TO MONGODB
 	bookmark
 		.save(bookmark)
 		.then((data) => {
@@ -43,9 +42,8 @@ exports.findOne = async (req, res) => {
 	try {
 		const bookmark = await Bookmark.findById(id);
 		// CHECK WHETHER THE BOOKMARK BELONGS TO THE USER
-		// console.log(bookmark);
 		if (bookmark.userId !== req.body.userid) {
-			return res.status(400).send("Access Denied, not your bookmarks");
+			return res.status(400).send("Access Denied, not your bookmark");
 		}
 		res.send(bookmark);
 	} catch (err) {
@@ -59,12 +57,9 @@ exports.findOne = async (req, res) => {
 exports.findAll = async (req, res) => {
 	const title = req.query.title;
 	const userid = req.body.userid;
-	console.log(req.body);
 	const condition = title
 		? { userId: userid, title: { $regex: new RegExp(title), $options: "i" } }
 		: { userId: userid };
-	console.log(condition);
-	// const condition = ({userId: userId, searchTerm})
 	try {
 		const bookmarks = await Bookmark.find(condition);
 		console.log(bookmarks);
@@ -78,12 +73,10 @@ exports.findAll = async (req, res) => {
 
 exports.update = async (req, res) => {
 	const bookmark = req.body.bookmark;
-	console.log(bookmark);
 	if (!bookmark) {
 		return res.status(400).send({ message: "bookmark data cannot be empty" });
 	}
 	const id = req.params.id;
-	console.log(id);
 	try {
 		// CHECK WHETHER THE BOOKMARK BELONGS TO THE USER
 		const bookmarkExist = await Bookmark.findById(id);
@@ -92,11 +85,10 @@ exports.update = async (req, res) => {
 		}
 		const data = await Bookmark.findByIdAndUpdate(id, bookmark);
 		if (!data) {
-			res.status(404).send({ message: `Cannot update tutorial with id ${id}` });
+			res.status(404).send({ message: `Cannot update bookmark with id ${id}` });
 		} else {
 			// BOOKMARK IS UPDATED
 			// BUT CONSOLES VALUES BEFORE UPDATION
-			// console.log(data)
 			res.send({ message: "bookmark updated successfully" });
 		}
 	} catch (err) {
@@ -104,7 +96,8 @@ exports.update = async (req, res) => {
 	}
 };
 
-// DELETES A BOOKMARK BY ID
+
+// DELETES A BOOKMARK
 
 exports.deleteOne = async (req, res) => {
 	const id = req.params.id;
@@ -121,7 +114,6 @@ exports.deleteOne = async (req, res) => {
 				message: `cannot delete bookmark with ${id}, Maybe it is not found`,
 			});
 		} else {
-			console.log(data);
 			res.send({
 				message: "Bookmark was deleted successfully",
 			});
