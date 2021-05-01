@@ -1,5 +1,7 @@
 import urlMetaData from 'url-metadata'
 
+
+// REGULAR EXPRESSION TO VALIDATE URL
 const urlValReg = /([--:\w?@%&+~#=]*\.[a-z]{2,4}\/{0,2})((?:[?&](?:\w+)=(?:\w+))+|[--:\w?@%&+~#=]+)?/;
 
 function validate(url) {
@@ -20,14 +22,7 @@ const urlhandler = async function (reqbody) {
         return false
     }
     const metaData = await getMeta(reqbody)
-    // console.log(metaData)
     return metaData
 }
 
 export default urlhandler
-
-// const test = {
-//     url: "https://lunchbag.ca/lunch-money"
-// }
-
-// urlhandler(test)
